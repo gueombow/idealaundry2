@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IDEALAUNDRY</title>
+
+<link rel="manifest" href="manifest.json">
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+<style>
+body{
+  font-family: monospace;
+  width:58mm;
+  margin:0 auto;
+  background:#fff;
+}
+#struk{
+  padding:6px;
+}
+.center{text-align:center}
+.right{text-align:right}
+.bold{font-weight:bold}
+.small{font-size:11px}
+hr{border:none;border-top:1px dashed #000;margin:6px 0}
+input,select{
+  width:100%;
+  font-family: monospace;
+  font-size:12px;
+  margin:2px 0;
+}
+button{
+  width:100%;
+  margin-top:8px;
+  padding:6px;
+}
+.row{
+  display:flex;
+  justify-content:space-between;
+}
+</style>
+</head>
+
+<body>
+
+<div id="struk">
+
+<div class="row small">
+  <div>No: <b id="nota"></b></div>
+  <div id="tgl"></div>
+</div>
+
+<div class="center bold">IDEALAUNDRY</div>
+<div class="center small">
+Perum Cijujung Permai<br>
+Blok D No.11<br>
+Telp 085179578282
+</div>
+
+<hr>
+
+<div class="small bold">DATA PELANGGAN</div>
+Nama
+<input id="nama">
+Alamat
+<input id="alamat">
+No HP
+<input id="hp">
+
+<hr>
+
+<div class="small bold">LAUNDRY KILOAN</div>
+<select id="layanan">
+  <option value="7000">Setrika Reguler (3 hari) - 7.000</option>
+  <option value="6000">Lipat Reguler (3 hari) - 6.000</option>
+  <option value="8000">Lipat Express (1 hari) - 8.000</option>
+  <option value="6000">Setrika Express (1 hari) - 6.000</option>
+</select>
+
+Berat (kg)
+<input type="number" id="kg" value="1">
+
+<hr>
+
+<div class="small bold">LAUNDRY SATUAN</div>
+Jenis
+<input placeholder="Contoh: Selimut">
+Harga
+<input type="number" placeholder="Contoh: 15000">
+
+<hr>
+
+<div class="row small">
+  <div>Masuk</div>
+  <div id="masuk"></div>
+</div>
+<div class="row small">
+  <div>Selesai</div>
+  <div><input type="date"></div>
+</div>
+
+<hr>
+
+<div class="center small">
+Terimakasih telah memilih<br>
+laundry kami
+</div>
+
+</div>
+
+<button onclick="shareWA()">📤 Share WhatsApp (JPG)</button>
+
+<script>
+const now = new Date();
+document.getElementById("nota").innerText = "IDL" + now.getTime();
+document.getElementById("tgl").innerText = now.toLocaleDateString("id-ID");
+document.getElementById("masuk").innerText = now.toLocaleString("id-ID");
+
+function shareWA(){
+  html2canvas(document.getElementById("struk")).then(canvas=>{
+    canvas.toBlob(blob=>{
+      const file = new File([blob],"nota-idealaundry.jpg",{type:"image/jpeg"});
+      if(navigator.canShare){
+        navigator.share({
+          files:[file],
+          title:"Nota Laundry",
+          text:"Nota Laundry IDEALAUNDRY"
+        });
+      }else{
+        alert("Share gambar tidak didukung browser ini");
+      }
+    });
+  });
+}
+
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('service-worker.js');
+}
+</script>
+
+</body>
+</html>
