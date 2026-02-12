@@ -2,139 +2,237 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>IDEALAUNDRY</title>
-
-<link rel="manifest" href="manifest.json">
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IDEALAUNDRY Nota</title>
 
 <style>
 body{
-  font-family: monospace;
-  width:58mm;
-  margin:0 auto;
+  font-family:"Courier New",monospace;
+  background:#f2f2f2;
+  padding:10px;
+}
+#nota{
+  width:280px;
   background:#fff;
+  padding:10px;
+  margin:auto;
 }
-#struk{
-  padding:6px;
+h2{
+  text-align:center;
+  margin:2px 0;
 }
-.center{text-align:center}
-.right{text-align:right}
-.bold{font-weight:bold}
-.small{font-size:11px}
-hr{border:none;border-top:1px dashed #000;margin:6px 0}
+small{
+  display:block;
+  text-align:center;
+}
+hr{
+  border:none;
+  border-top:1px dashed #000;
+}
+label{
+  font-size:12px;
+}
 input,select{
   width:100%;
-  font-family: monospace;
+  margin-bottom:6px;
+  font-family:"Courier New",monospace;
+}
+table{
+  width:100%;
   font-size:12px;
-  margin:2px 0;
+}
+td{
+  vertical-align:top;
+}
+.right{
+  text-align:right;
 }
 button{
   width:100%;
-  margin-top:8px;
-  padding:6px;
+  margin-top:6px;
+  padding:8px;
 }
-.row{
-  display:flex;
-  justify-content:space-between;
+.bold{
+  font-weight:bold;
 }
 </style>
 </head>
 
 <body>
 
-<div id="struk">
+<div id="nota">
 
-<div class="row small">
-  <div>No: <b id="nota"></b></div>
-  <div id="tgl"></div>
+<div style="display:flex;justify-content:space-between">
+  <b>No:</b> <span id="noNota"></span>
 </div>
 
-<div class="center bold">IDEALAUNDRY</div>
-<div class="center small">
-Perum Cijujung Permai<br>
-Blok D No.11<br>
-Telp 085179578282
-</div>
+<h2>IDEALAUNDRY</h2>
+<small>
+Perum Cijujung Permai Blok D No.11<br>
+Telp. 085179578282
+</small>
 
 <hr>
 
-<div class="small bold">DATA PELANGGAN</div>
-Nama
-<input id="nama">
-Alamat
-<input id="alamat">
-No HP
-<input id="hp">
+<label>Nama Pelanggan</label>
+<input type="text" id="nama">
+
+<label>No Telp</label>
+<input type="text" id="telp">
+
+<label>Alamat</label>
+<input type="text" id="alamat">
 
 <hr>
 
-<div class="small bold">LAUNDRY KILOAN</div>
-<select id="layanan">
-  <option value="7000">Setrika Reguler (3 hari) - 7.000</option>
-  <option value="6000">Lipat Reguler (3 hari) - 6.000</option>
-  <option value="8000">Lipat Express (1 hari) - 8.000</option>
-  <option value="6000">Setrika Express (1 hari) - 6.000</option>
+<label>Tanggal Masuk</label>
+<input type="datetime-local" id="tglMasuk">
+
+<label>Tanggal Selesai</label>
+<input type="date" id="tglSelesai">
+
+<hr>
+
+<label>Laundry Kiloan</label>
+<select id="layananKiloan" onchange="updateSemua()">
+  <option value="">-- pilih --</option>
+  <option value="7000|3">Cuci setrika reguler (3 hari) - 7.000</option>
+  <option value="6000|3">Cuci lipat (3 hari) - 6.000</option>
+  <option value="8000|1">Cuci lipat xpress (1 hari) - 8.000</option>
+  <option value="6000|1">Setrika (1 hari) - 6.000</option>
 </select>
 
-Berat (kg)
-<input type="number" id="kg" value="1">
+<label>Berat (Kg)</label>
+<input type="number" id="berat" oninput="updateSemua()">
 
 <hr>
 
-<div class="small bold">LAUNDRY SATUAN</div>
-Jenis
-<input placeholder="Contoh: Selimut">
-Harga
-<input type="number" placeholder="Contoh: 15000">
+<label>Laundry Satuan</label>
+<input type="text" id="namaSatuan" placeholder="Nama layanan">
+<input type="number" id="hargaSatuan" placeholder="Harga" oninput="updateSemua()">
 
 <hr>
 
-<div class="row small">
-  <div>Masuk</div>
-  <div id="masuk"></div>
-</div>
-<div class="row small">
-  <div>Selesai</div>
-  <div><input type="date"></div>
-</div>
+<table>
+<tr>
+  <td>Subtotal Kiloan</td>
+  <td class="right" id="subKiloan">Rp 0</td>
+</tr>
+<tr>
+  <td>Subtotal Satuan</td>
+  <td class="right" id="subSatuan">Rp 0</td>
+</tr>
+<tr>
+  <td class="bold">TOTAL</td>
+  <td class="right bold" id="total">Rp 0</td>
+</tr>
+</table>
 
 <hr>
 
-<div class="center small">
-Terimakasih telah memilih<br>
-laundry kami
+<div style="font-size:12px">
+<div><b>Nama:</b> <span id="outNama"></span></div>
+<div><b>Telp:</b> <span id="outTelp"></span></div>
+<div><b>Alamat:</b> <span id="outAlamat"></span></div>
 </div>
 
-</div>
+<hr>
+<small>Terima kasih telah memilih laundry kami</small>
 
-<button onclick="shareWA()">📤 Share WhatsApp (JPG)</button>
+<button onclick="printThermal()">PRINT THERMAL</button>
+
+</div>
 
 <script>
-const now = new Date();
-document.getElementById("nota").innerText = "IDL" + now.getTime();
-document.getElementById("tgl").innerText = now.toLocaleDateString("id-ID");
-document.getElementById("masuk").innerText = now.toLocaleString("id-ID");
-
-function shareWA(){
-  html2canvas(document.getElementById("struk")).then(canvas=>{
-    canvas.toBlob(blob=>{
-      const file = new File([blob],"nota-idealaundry.jpg",{type:"image/jpeg"});
-      if(navigator.canShare){
-        navigator.share({
-          files:[file],
-          title:"Nota Laundry",
-          text:"Nota Laundry IDEALAUNDRY"
-        });
-      }else{
-        alert("Share gambar tidak didukung browser ini");
-      }
-    });
-  });
+function formatRupiah(n){
+  return "Rp " + n.toLocaleString("id-ID");
 }
 
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('service-worker.js');
+function nomorNota(){
+  const d=new Date();
+  return "IL-"+d.getFullYear()
+    +(d.getMonth()+1).toString().padStart(2,"0")
+    +d.getDate().toString().padStart(2,"0")
+    +d.getHours().toString().padStart(2,"0")
+    +d.getMinutes().toString().padStart(2,"0")
+    +d.getSeconds().toString().padStart(2,"0");
+}
+
+document.getElementById("noNota").innerText=nomorNota();
+
+const now=new Date();
+document.getElementById("tglMasuk").value=now.toISOString().slice(0,16);
+
+function updateSemua(){
+
+  let layanan=document.getElementById("layananKiloan").value;
+  let berat=parseFloat(document.getElementById("berat").value)||0;
+  let subKiloan=0;
+
+  if(layanan){
+    let [harga,hari]=layanan.split("|");
+    subKiloan=parseInt(harga)*berat;
+
+    const selesai=new Date(document.getElementById("tglMasuk").value);
+    selesai.setDate(selesai.getDate()+parseInt(hari));
+    document.getElementById("tglSelesai").value=
+      selesai.toISOString().slice(0,10);
+  }
+
+  let subSatuan=
+    parseInt(document.getElementById("hargaSatuan").value)||0;
+
+  let total=subKiloan+subSatuan;
+
+  document.getElementById("subKiloan").innerText=
+    formatRupiah(subKiloan);
+
+  document.getElementById("subSatuan").innerText=
+    formatRupiah(subSatuan);
+
+  document.getElementById("total").innerText=
+    formatRupiah(total);
+
+  document.getElementById("outNama").innerText=
+    document.getElementById("nama").value;
+
+  document.getElementById("outTelp").innerText=
+    document.getElementById("telp").value;
+
+  document.getElementById("outAlamat").innerText=
+    document.getElementById("alamat").value;
+}
+
+function printThermal(){
+  alert("Print ESC/POS via RawBT\n(Siap dipanggil dari APK)");
+  <button onclick="shareJPG()">SHARE WHATSAPP (JPG)</button>
+// Load html2canvas
+const script = document.createElement("script");
+script.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+document.head.appendChild(script);
+
+function shareJPG(){
+
+  html2canvas(document.getElementById("nota")).then(canvas=>{
+
+    canvas.toBlob(function(blob){
+
+      const file = new File([blob], "nota.jpg", {type:"image/jpeg"});
+
+      if(navigator.canShare && navigator.canShare({files:[file]})){
+        navigator.share({
+          files:[file],
+          title:"Nota IDEALAUNDRY"
+        });
+      } else {
+        alert("Browser tidak mendukung share file.\nGunakan Chrome Android terbaru.");
+      }
+
+    },"image/jpeg",0.95);
+
+  });
+
+}
 }
 </script>
 
