@@ -15,7 +15,7 @@ body{
 }
 
 #nota{
-  width:320px;
+  width:340px;
   background:#fff;
   padding:10px;
   margin:auto;
@@ -30,10 +30,15 @@ h2{
 table{
   width:100%;
   font-size:12px;
+  border-collapse:collapse;
 }
 
-td{
-  padding:2px 0;
+td,th{
+  padding:3px;
+}
+
+th{
+  border-bottom:1px solid #000;
 }
 
 .right{
@@ -48,11 +53,20 @@ input, select{
 }
 
 button{
-  width:320px;
+  width:340px;
   padding:8px;
   margin:5px auto;
   display:block;
   font-family:monospace;
+}
+.small-btn{
+  width:100%;
+  padding:4px;
+  font-size:11px;
+}
+hr{
+  border:0;
+  border-top:1px dashed #000;
 }
 </style>
 </head>
@@ -75,13 +89,13 @@ button{
 <hr>
 
 Nama:
-<input type="text" id="nama">
+<input type="text">
 
 No Telp:
-<input type="text" id="telp">
+<input type="text">
 
 Alamat:
-<input type="text" id="alamat">
+<input type="text">
 
 <hr>
 
@@ -93,7 +107,8 @@ Tanggal Selesai:
 
 <hr>
 
-<b>Laundry Kiloan</b>
+<b>LAUNDRY KILOAN</b>
+
 <select id="layananKiloan" onchange="updateSemua()">
 <option value="">-- Pilih Layanan --</option>
 <option value="7000|3">Cuci (3 Hari) - 7000/kg</option>
@@ -113,10 +128,26 @@ Berat (kg):
 
 <hr>
 
-<b>Laundry Satuan</b>
+<b>LAUNDRY SATUAN</b>
 
-Harga:
-<input type="number" id="hargaSatuan" oninput="updateSemua()">
+<table id="tableSatuan">
+<thead>
+<tr>
+<th>Item</th>
+<th>Harga</th>
+<th></th>
+</tr>
+</thead>
+<tbody id="bodySatuan">
+<tr>
+<td><input type="text" oninput="updateSemua()"></td>
+<td><input type="number" oninput="updateSemua()"></td>
+<td><button class="small-btn" onclick="hapusItem(this)">X</button></td>
+</tr>
+</tbody>
+</table>
+
+<button class="small-btn" onclick="tambahItem()">+ Tambah Item</button>
 
 <table>
 <tr>
@@ -163,14 +194,29 @@ document.getElementById("noNota").innerText = generateNoNota();
 const now = new Date();
 document.getElementById("tglMasuk").value = now.toISOString().slice(0,16);
 
+function tambahItem(){
+  const tbody = document.getElementById("bodySatuan");
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td><input type="text" oninput="updateSemua()"></td>
+    <td><input type="number" oninput="updateSemua()"></td>
+    <td><button class="small-btn" onclick="hapusItem(this)">X</button></td>
+  `;
+  tbody.appendChild(row);
+}
+
+function hapusItem(btn){
+  btn.parentElement.parentElement.remove();
+  updateSemua();
+}
+
 function updateSemua(){
 
   const layanan = document.getElementById("layananKiloan").value;
   const berat = parseFloat(document.getElementById("berat").value) || 0;
-  const hargaSatuan = parseFloat(document.getElementById("hargaSatuan").value) || 0;
 
   let subKiloan = 0;
-  let subSatuan = hargaSatuan;
+  let subSatuan = 0;
 
   if(layanan !== ""){
     const data = layanan.split("|");
@@ -187,6 +233,12 @@ function updateSemua(){
         selesai.toISOString().slice(0,10);
     }
   }
+
+  const rows = document.querySelectorAll("#bodySatuan tr");
+  rows.forEach(row=>{
+    const harga = parseFloat(row.cells[1].querySelector("input").value) || 0;
+    subSatuan += harga;
+  });
 
   const total = subKiloan + subSatuan;
 
